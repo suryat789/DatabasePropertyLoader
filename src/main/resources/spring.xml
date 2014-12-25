@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<!-- ################################################################################## -->
+	<!-- ############# Dependency Injection for Database Commons Config ############## -->
+	<!-- ################################################################################## -->
+
+	<!-- ============================== THIS WILL NOT CHANGE ============================== -->
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		p:properties-ref="commonsConfigurationFactoryBean" />
+
+	<bean id="commonsConfigurationFactoryBean"
+		class="org.springmodules.commons.configuration.CommonsConfigurationFactoryBean">
+		<constructor-arg ref="databaseConfiguration" />
+	</bean>
+	<!-- ==================================================================================== -->
+	<bean id="databaseConfiguration" class="org.apache.commons.configuration.DatabaseConfiguration">
+		<constructor-arg type="javax.sql.DataSource" ref="dataSource" />
+		<constructor-arg name="table" value="AppConfiguration" /><!-- 
+			configuration table name -->
+		<constructor-arg name="nameColumn" value="applicationCode" /><!-- 
+			name column -->
+		<constructor-arg name="keyColumn" value="key" /><!-- key 
+			column -->
+		<constructor-arg name="valueColumn" value="value" /><!-- 
+			value column -->
+		<constructor-arg name="name">
+			<util:constant static-field="dev.surya.utils.Constants.APPLICATION_CODE" />
+		</constructor-arg><!-- name (specific configurations) -->
+	</bean>
+
+	<!-- ################################################################################## -->
+	<!-- Bean Injection -->
+	<bean id="appConfig" class="dev.surya.model.AppConfiguration"
+		p:keyOne="${KeyOne}" p:keyTwo="${KeyTwo}" />
+</beans>
